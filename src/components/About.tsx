@@ -2,11 +2,14 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function About() {
   useGSAP(() => {
-    const titleSplit = SplitText.create("#about h2", {
+    const titleSplit = new SplitText("#about h2", {
       type: "words",
     });
 
@@ -35,17 +38,17 @@ export default function About() {
         },
         "-=0.5",
       );
-  });
+  }, []);
 
   return (
-    <div id="about">
+    <section id="about">
       <div className="mb-16 md:px-0 px-5">
         <div className="content">
           <div className="md:col-span-8">
             <p className="badge">Best Cocktails</p>
             <h2>
-              Where every details matters <span className="text-white">-</span>{" "}
-              from muddle to garnish"
+              Where every detail matters <span className="text-white">-</span>{" "}
+              from muddle to garnish
             </h2>
           </div>
 
@@ -66,6 +69,7 @@ export default function About() {
           </div>
         </div>
       </div>
+
       <div className="top-grid">
         <div className="md:col-span-3">
           <div className="noisy" />
@@ -80,6 +84,7 @@ export default function About() {
           <img src="/images/abt5.png" alt="grid-img-5" />
         </div>
       </div>
+
       <div className="bottom-grid">
         <div className="md:col-span-8">
           <div className="noisy" />
@@ -90,6 +95,6 @@ export default function About() {
           <img src="/images/abt4.png" alt="grid-img-4" />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -7,11 +7,9 @@ import { SplitText } from "gsap/SplitText";
 import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 
-// GSAP Plugins registrieren
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function Hero() {
-  // 1. Ref explizit als HTMLVideoElement typisieren
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
