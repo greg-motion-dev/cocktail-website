@@ -1,42 +1,88 @@
+"use client";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { useRef } from "react";
+import { useMediaQuery } from "react-responsive";
+
+// GSAP Plugins registrieren
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function Hero() {
-  useGSAP(() => {
-    const heroSplit = new SplitText(".title", { type: "chars, words" });
-    const paragraphSplit = new SplitText(".subtitle", { type: "lines" });
+  // 1. Ref explizit als HTMLVideoElement typisieren
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
-    heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
+  useGSAP(
+    () => {
+      const heroSplit = new SplitText(".title", { type: "chars, words" });
+      const paragraphSplit = new SplitText(".subtitle", { type: "lines" });
 
-    gsap.from(heroSplit.chars, {
-      yPercent: 100,
-      duration: 1.8,
-      ease: "expo.out",
-      stagger: 0.06,
-    });
+      heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
 
-    gsap.from(paragraphSplit.lines, {
-      opacity: 0,
-      yPercent: 100,
-      duration: 1.8,
-      ease: "expo.out",
-      stagger: 0.06,
-      delay: 1,
-    });
+      gsap.from(heroSplit.chars, {
+        yPercent: 100,
+        duration: 1.8,
+        ease: "expo.out",
+        stagger: 0.06,
+      });
 
-    gsap
-      .timeline({
+      gsap.from(paragraphSplit.lines, {
+        opacity: 0,
+        yPercent: 100,
+        duration: 1.8,
+        ease: "expo.out",
+        stagger: 0.06,
+        delay: 1,
+      });
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        })
+        .to(".right-leaf", { y: 200 }, 0)
+        .to(".left-leaf", { y: -200 }, 0);
+
+      const startValue = isMobile ? "top 50%" : "center 60%";
+      const endValue = isMobile ? "120% top" : "bottom top";
+
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "bottom top",
+          trigger: "video",
+          start: startValue,
+          end: endValue,
           scrub: true,
+          pin: true,
         },
-      })
-      .to(".right-leaf", { y: 200 }, 0)
-      .to(".left-leaf", { y: -200 }, 0);
-  }, []);
+      });
+
+      // 2. Säuberung & Null-Check für das Video-Element
+      const video = videoRef.current;
+      if (video) {
+        const handleMetadata = () => {
+          tl.to(video, {
+            currentTime: video.duration,
+          });
+        };
+
+        // Falls Metadaten bereits geladen wurden, bevor der Hook feuert
+        if (video.readyState >= 1) {
+          handleMetadata();
+        } else {
+          video.onloadedmetadata = handleMetadata;
+        }
+      }
+    },
+    // 3. Dependencies übergeben, damit isMobile bei Resize aktualisiert wird
+    { dependencies: [isMobile] },
+  );
 
   return (
     <>
@@ -62,7 +108,7 @@ export default function Hero() {
             </div>
             <div className="view-cocktails">
               <p className="subtitle">
-                Every cocktail on our menu is a blend of premium ingrendients,
+                Every cocktail on our menu is a blend of premium ingredients,
                 creative flair, and timeless recipes - designed to delight your
                 senses.
               </p>
@@ -71,6 +117,15 @@ export default function Hero() {
           </div>
         </div>
       </section>
+      <div className="video absolute inset-0">
+        <video
+          ref={videoRef}
+          src="/videos/output.mp4"
+          muted
+          playsInline
+          preload="auto"
+        />
+      </div>
     </>
   );
 }
