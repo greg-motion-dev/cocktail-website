@@ -6,7 +6,6 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 z-50 w-full px-5 lg:px-0 py-5">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
-        {/* Logo & Name */}
         <a href="#hero" className="flex items-center gap-3">
           <img
             src="/images/logo.png"
@@ -16,7 +15,6 @@ export default function Navbar() {
           <p className="font-modern-negra text-3xl -mb-2 text-white">Cosmo</p>
         </a>
 
-        {/* Navigation Links */}
         <ul className="flex items-center gap-7 lg:gap-12">
           {navLinks.map((link) => (
             <li key={link.id}>
