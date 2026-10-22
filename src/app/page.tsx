@@ -1,11 +1,13 @@
 "use client";
 
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { useGSAP } from "@gsap/react";
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Cocktails from "@/components/Cocktails";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -26,6 +28,7 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
+      <Cocktails />
     </main>
   );
 }
